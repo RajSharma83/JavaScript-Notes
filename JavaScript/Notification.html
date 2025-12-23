@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+   <div class="parent flex flex-col items-start gap-2 p-10"></div>
+  <script>
+    function createToster(config){
+  return function(str) {
+    let div = document.createElement("div");
+    div.textContent = str;
+    div.className =
+      "inline-block bg-gray-800 text-white px-6 py-3 rounded shadow-lg pointer-events-none transition-opacity duration-300";
+    document.querySelector(".parent").appendChild(div);
+    setTimeout(() => {
+      document.querySelector(".parent").removeChild(div);
+    }, config.duration * 1000);
+  };
+};
+    let Toster = createToster({
+      positionX: "right",
+      positionY: "top",
+      theme: "dark",
+      duration: 3,
+    });
+    Toster("Download is completed dear !");
+     setTimeout(() => {
+      Toster("Raj sharma accept the request")
+    }, 2000);
+  </script>
+</body>
+</html>

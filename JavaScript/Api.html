@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Detail-Api</Details></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(-45deg, rgb(58, 127, 255), #561c1c, #590000, #3bffa3);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        body.dark {
+            background: linear-gradient(-45deg, #232526, #414345, #232526, #414345);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+        }
+    </style>
+</head>
+<body class="transition-colors duration-500">
+    <button id="themeToggle"
+        class="fixed top-6 right-8 z-10 px-6 py-2 rounded-full shadow bg-white text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300">
+        🌙 Dark Mode
+    </button>
+    <script>
+        // Theme toggle logic
+        const toggleBtn = document.getElementById('themeToggle');
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            if(document.body.classList.contains('dark')) {
+                toggleBtn.textContent = '☀️ Light Mode';
+            } else {
+                toggleBtn.textContent = '🌙 Dark Mode';
+            }
+        });
+        function createUserCard() {
+            const card = document.createElement('div');
+            card.className = "bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 w-64 flex flex-col items-center transition-colors duration-500";
+            card.innerHTML = `
+                <img src="" alt="User" class="w-20 h-20 rounded-full object-cover mb-4 border-4 border-cyan-500">
+                <h3 class="text-lg font-semibold mb-2 dark:text-white"></h3>
+                <button class="px-4 py-1 rounded-full text-sm font-medium mb-2 cursor-default"></button>
+                <p class="text-gray-600 dark:text-gray-300 text-base text-center"></p>
+            `;
+            const refreshBtn = document.createElement('button');
+            refreshBtn.textContent = '🔄 Refresh User';
+            refreshBtn.className = "mt-4 px-4 py-2 rounded bg-cyan-500 text-white hover:bg-cyan-600 transition";
+            refreshBtn.addEventListener('click', () => updateUserCard(card));
+            card.appendChild(refreshBtn);
+            return card;
+        }
+
+        async function updateUserCard(card) {
+            try {
+                const res = await fetch('https://randomuser.me/api/');
+                const data = await res.json();
+                const user = data.results[0];
+                card.querySelector('img').src = user.picture.large;
+                card.querySelector('img').alt = user.name.first + ' ' + user.name.last;
+                card.querySelector('h3').textContent = user.name.first + ' ' + user.name.last;
+                card.querySelector('p').textContent = user.email;
+                const isActive = Math.random() > 0.5;
+                const statusBtn = card.querySelector('button');
+                if (isActive) {
+                    statusBtn.textContent = '● Active';
+                    statusBtn.className = "px-4 py-1 rounded-full text-sm font-medium mb-2 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 cursor-default";
+                } else {
+                    statusBtn.textContent = '● Offline';
+                    statusBtn.className = "px-4 py-1 rounded-full text-sm font-medium mb-2 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 cursor-default";
+                }
+            } catch (e) {
+                card.querySelector('h3').textContent = 'Error loading user';
+            }
+        }
+        const cardsWrapper = document.createElement('div');
+        cardsWrapper.className = "flex flex-wrap justify-center items-center min-h-screen gap-8";
+        for (let i = 0; i < 3; i++) {
+            const card = createUserCard();
+            cardsWrapper.appendChild(card);
+            updateUserCard(card);
+        }
+        const oldWrapper = document.querySelector('.flex.flex-wrap.justify-center.items-center.min-h-screen.gap-8');
+        if (oldWrapper) oldWrapper.remove();
+        document.body.appendChild(cardsWrapper);
+    </script>
+</body>
+</html>
