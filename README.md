@@ -1,4 +1,4 @@
-# JavaScript Learning Journey
+# ⚡  JavaScript Learning Journey
 
 Welcome to my **JavaScript Learning Journey**!  
 
